@@ -3,9 +3,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Copy, Check, Wand2, Download, FileText, FileJson, FileCode, Sparkles } from "lucide-react";
+  DropdownMenuTrigger
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";

@@ -416,12 +416,10 @@ function PromptCard({ prompt, language, onToggleFavorite, onDelete, onCopy, onUp
             ) : (
               <Button 
                 variant="ghost" size="sm" 
-                className="h-6 px-1.5 text-xs text-muted-foreground opacity-0 group-hover:opacity-100"
+                className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground"
                 onClick={() => setIsEditingTags(true)}
               >
-                <Plus className="w-3 h-3 mr-0.5" />
-                <Tag className="w-3 h-3" />
-              </Button>
+                <Plus className="w
             )}
 
             <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary ml-auto">

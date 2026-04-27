@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Zap, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 
@@ -20,15 +22,18 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
+  const { language } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/app');
     }
   }, [user, navigate]);
 
@@ -55,6 +60,32 @@ const Auth = () => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!email) {
+      toast({
+        title: language === 'en' ? 'Enter your email first' : language === 'ua' ? 'Спочатку введіть email' : 'Сначала введите email',
+        variant: 'destructive'
+      });
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`
+    });
+    if (!error) {
+      setResetSent(true);
+      toast({
+        title: language === 'en' ? 'Reset link sent' : language === 'ua' ? 'Посилання надіслано' : 'Ссылка отправлена',
+        description: language === 'en' ? 'Check your email' : language === 'ua' ? 'Перевірте пошту' : 'Проверьте почту'
+      });
+    } else {
+      toast({
+        title: language === 'en' ? 'Error' : language === 'ua' ? 'Помилка' : 'Ошибка',
+        description: error.message,
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -63,52 +94,52 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      if (isLogin) {
+      if (isLogin && !isForgotPassword) {
         const { error } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
             toast({
-              title: 'Ошибка входа',
-              description: 'Неверный email или пароль',
+              title: language === 'en' ? 'Login error' : language === 'ua' ? 'Помилка входу' : 'Ошибка входа',
+              description: language === 'en' ? 'Invalid email or password' : language === 'ua' ? 'Невірний email або пароль' : 'Неверный email или пароль',
               variant: 'destructive'
             });
           } else {
             toast({
-              title: 'Ошибка',
+              title: language === 'en' ? 'Error' : language === 'ua' ? 'Помилка' : 'Ошибка',
               description: error.message,
               variant: 'destructive'
             });
           }
-        } else {
-          toast({
-            title: 'Добро пожаловать!',
-            description: 'Вы успешно вошли в систему'
-          });
-          navigate('/');
-        }
+          } else {
+            toast({
+              title: 'Добро пожаловать!',
+              description: 'Вы успешно вошли в систему'
+            });
+            navigate('/app');
+          }
       } else {
         const { error } = await signUp(email, password, displayName);
         if (error) {
-          if (error.message.includes('already registered')) {
-            toast({
-              title: 'Аккаунт существует',
-              description: 'Пользователь с таким email уже зарегистрирован',
-              variant: 'destructive'
-            });
-          } else {
-            toast({
-              title: 'Ошибка регистрации',
-              description: error.message,
-              variant: 'destructive'
-            });
-          }
+        if (error.message.includes('already registered')) {
+          toast({
+            title: language === 'en' ? 'Account exists' : language === 'ua' ? 'Аккаунт існує' : 'Аккаунт существует',
+            description: language === 'en' ? 'User with this email already registered' : language === 'ua' ? 'Користувач з таким email вже зареєстрований' : 'Пользователь с таким email уже зарегистрирован',
+            variant: 'destructive'
+          });
         } else {
           toast({
-            title: 'Регистрация успешна!',
-            description: 'Добро пожаловать в PromptForge'
+            title: language === 'en' ? 'Signup error' : language === 'ua' ? 'Помилка реєстрації' : 'Ошибка регистрации',
+            description: error.message,
+            variant: 'destructive'
           });
-          navigate('/');
         }
+          } else {
+            toast({
+              title: 'Регистрация успешна!',
+              description: 'Добро пожаловать в PromptForge'
+            });
+            navigate('/app');
+          }
       }
     } finally {
       setIsLoading(false);
@@ -129,7 +160,7 @@ const Auth = () => {
           variant="ghost"
           size="sm"
           className="mb-6"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/app')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Назад

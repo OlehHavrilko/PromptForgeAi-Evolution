@@ -42,7 +42,6 @@ interface NavItem {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  feature?: string;
 }
 
 export function AppSidebar() {
@@ -57,22 +56,18 @@ export function AppSidebar() {
     language === "en" ? en : language === "ua" ? ua : ru;
 
   const mainItems: NavItem[] = [
-    { title: t("Generator", "Генератор", "Генератор"), url: "/app", icon: Wand2, feature: "generator" },
-    { title: t("Chat", "Чат", "Чат"), url: "/chat", icon: MessageSquare, feature: "chat" },
-    { title: t("Image Analyzer", "Анализ изображений", "Аналіз зображень"), url: "/app/images", icon: Image, feature: "image_analyzer" },
-    { title: t("Text Tools", "Текстовые инструменты", "Текстові інструменти"), url: "/app/text-tools", icon: Type, feature: "text_tools" },
+    { title: t("Generator", "Генератор", "Генератор"), url: "/app", icon: Wand2 },
+    { title: t("Chat", "Чат", "Чат"), url: "/chat", icon: MessageSquare },
+    { title: t("Image Analyzer", "Анализ изображений", "Аналіз зображень"), url: "/app/images", icon: Image },
+    { title: t("Text Tools", "Текстовые инструменты", "Текстові інструменти"), url: "/app/text-tools", icon: Type },
   ];
 
   const libraryItems: NavItem[] = [
-    { title: t("Saved Prompts", "Сохранённые", "Збережені"), url: "/prompts", icon: BookMarked, feature: "saved_prompts" },
-    { title: t("Templates", "Шаблоны", "Шаблони"), url: "/templates", icon: LayoutGrid, feature: "templates" },
-    { title: t("My Templates", "Мои шаблоны", "Мої шаблони"), url: "/my-templates", icon: FileText, feature: "my_templates" },
-    { title: t("Marketplace", "Маркетплейс", "Маркетплейс"), url: "/marketplace", icon: Store, feature: "marketplace" },
-  ];
+    { title:
 
   const analyticsItems: NavItem[] = [
-    { title: t("Dashboard", "Дашборд", "Дашборд"), url: "/dashboard", icon: BarChart3, feature: "dashboard" },
-    { title: t("History", "История", "Історія"), url: "/history", icon: Clock, feature: "history" },
+    { title: t("Dashboard", "Дашборд", "Дашборд"), url: "/dashboard", icon: BarChart3 },
+    { title: t("History", "История", "Історія"), url: "/history", icon: Clock },
   ];
 
   const adminItems: NavItem[] = [

@@ -40,21 +40,39 @@ const Promo = () => {
     setDemoLoading(true);
     setDemoResult("");
     try {
-      const { data, error } = await supabase.functions.invoke('generate-prompt', {
-        body: { input: demoInput, length: "Balanced", tone: "neutral", style: "default", targetModel: "auto" }
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-prompt`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          input: demoInput,
+          length: 'Balanced',
+          tone: 'neutral',
+          style: 'default',
+          targetModel: 'auto',
+        }),
       });
-      if (error) throw error;
-      if (data?.result) {
-        setDemoResult(data.result);
-      } else if (data?.error) {
-        throw new Error(data.error);
-      }
-    } catch (e) {
-      toast.error(language === 'en' ? 'Something went wrong, try again' : language === 'ua' ? 'Щось пішло не так, спробуйте ще' : 'Что-то пошло не так, попробуйте ещё');
-    } finally {
-      setDemoLoading(false);
-    }
-  };
+      if (!resp.ok || !resp.body) throw new Error('Failed');
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let result = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let nl: number;
+        while ((nl = buffer.indexOf('\n')) !== -1) {
+          let line = buffer.slice(0, nl).trim();
+          buffer = buffer.slice(nl + 1);
+          if (!line.startsWith('data: ')) continue;
+          const json = line.slice(6).trim();
+          if (json === '[DONE]') break;
+          try {
+            const parsed
 
   const t = {
     badge: { en: "AI Prompt Engineering Platform", ru: "Платформа AI-промпт инженерии", ua: "Платформа AI-промпт інженерії" },

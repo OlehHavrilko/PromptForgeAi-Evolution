@@ -136,11 +136,22 @@ const Index = () => {
       if (fullResult) {
         toast({ title: t('promptGenerated'), description: language === 'en' ? "Your optimized prompt is ready." : language === 'ua' ? "Ваш промпт готовий." : "Ваш промпт готов." });
       }
-    } catch (error) {
-      console.error('Generate prompt error:', error);
-      toast({ title: t('errorOccurred'), description: error instanceof Error ? error.message : t('errorOccurred'), variant: "destructive" });
-    } finally { setIsGenerating(false); }
-  }, [input, length, advancedSettings, toast, t, language, user, limits, canGenerate, incrementUsage, addToHistory]);
+  } catch (error) {
+    console.error('Generate prompt error:', error);
+    toast({ title: t('errorOccurred'), description: error instanceof Error ? error.message : t('errorOccurred'), variant: "destructive" });
+  } finally { setIsGenerating(false); }
+  }, [input, length, advancedSettings, toast, t, language, user, addToHistory]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (!isGenerating && input.trim()) handleGenerate();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleGenerate, isGenerating, input]);
 
   const handleSavePrompt = async () => {
     if (!user) { toast({ title: t('signInRequired'), description: t('signInRequired'), variant: "destructive" }); return; }

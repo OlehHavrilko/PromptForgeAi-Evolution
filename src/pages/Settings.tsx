@@ -139,10 +139,10 @@ const Settings = () => {
       <div className="relative z-10 container max-w-2xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            {currentLang === 'en' ? 'Back' : currentLang === 'ua' ? 'Назад' : 'Назад'}
-          </Button>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/app')}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          {currentLang === 'en' ? 'Back' : currentLang === 'ua' ? 'Назад' : 'Назад'}
+        </Button>
           <div>
             <h1 className="text-2xl font-bold text-foreground">{t('settingsTitle')}</h1>
             <p className="text-sm text-muted-foreground">
