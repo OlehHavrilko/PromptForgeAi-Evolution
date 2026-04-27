@@ -72,7 +72,11 @@ const Promo = () => {
           const json = line.slice(6).trim();
           if (json === '[DONE]') break;
           try {
-            const parsed
+            const parsed = JSON.parse(json);
+            result += parsed.choices?.[0]?.delta?.content || '';
+          } catch (e) {
+            console.error('JSON parse error:', e);
+          }
 
   const t = {
     badge: { en: "AI Prompt Engineering Platform", ru: "Платформа AI-промпт инженерии", ua: "Платформа AI-промпт інженерії" },

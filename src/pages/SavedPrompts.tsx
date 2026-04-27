@@ -422,9 +422,9 @@ function PromptCard({ prompt, language, onToggleFavorite, onDelete, onCopy, onUp
                 <Plus className="w
             )}
 
-            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary ml-auto">
-              {prompt.length_setting}
-            </span>
+                <span className="text-xs px-2 py-0.5 rounded-full text-primary ml-auto" style={{backgroundColor: 'hsl(var(--accent))'}}>
+                {prompt.length_setting}
+              </span>
             <span className="text-xs text-muted-foreground">
               {new Date(prompt.created_at).toLocaleDateString(
                 language === 'en' ? 'en-US' : language === 'ua' ? 'uk-UA' : 'ru-RU'
